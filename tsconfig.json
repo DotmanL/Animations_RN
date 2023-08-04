@@ -1,0 +1,35 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "baseUrl": ".",
+    "paths": {
+      "components/*": ["src/components/*"],
+      "screens/*": ["src/screens/*"],
+      "interfaces/*": ["src/interfaces/*"],
+      "constants/*": ["src/constants/*"],
+      "util/*": ["src/util/*"],
+      "store/*": ["src/store/*"],
+      "data/*": ["src/data/*"],
+
+    },
+    "forceConsistentCasingInFileNames": true,
+    "noEmitHelpers": true,
+    "noFallthroughCasesInSwitch": true,
+    "target": "ESNext",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "lib": ["ESNext", "DOM"],
+    "moduleResolution": "Node",
+    "strict": true,
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "noEmit": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "skipLibCheck": true
+  }
+}
