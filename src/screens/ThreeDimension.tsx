@@ -1,9 +1,9 @@
 import { Canvas, useFrame, useLoader } from "@react-three/fiber";
-import { Suspense, useLayoutEffect, useRef } from "react";
+import { Suspense, useLayoutEffect, useRef, useState } from "react";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
-import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
+// import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
 import { TextureLoader } from "expo-three";
-import THREE, { Group, Mesh } from "three";
+import THREE, { Mesh } from "three";
 import {
   useAnimatedSensor,
   SensorType,
@@ -17,6 +17,7 @@ type ShoeProps = {
 function Shoe(props: ShoeProps) {
   const { animatedSensor } = props;
   const mesh = useRef<THREE.Mesh>(null);
+  const [shoeObject, setShoeObject] = useState<THREE.Group | null>(null);
 
   const [base, normal, rough] = useLoader(TextureLoader, [
     require("../../assets/Airmax/textures/BaseColor.jpg"),
@@ -24,28 +25,51 @@ function Shoe(props: ShoeProps) {
     require("../../assets/Airmax/textures/Roughness.png")
   ]);
 
-  const material = useLoader(
-    MTLLoader,
-    require("../../assets/Airmax/shoe.mtl")
-  ) as MTLLoader.MaterialCreator;
-
-  const shoeObject = useLoader(
-    OBJLoader,
-    require("../../assets/Airmax/shoe.obj"),
-    (loader) => {
-      material.preload();
-      loader.setMaterials(material);
-    }
-  ) as Group;
+  //TODO: this causes a promise rejection warning, fix this
+  // const material = useLoader(
+  //   MTLLoader,
+  //   require("../../assets/Airmax/shoe.mtl")
+  // ) as MTLLoader.MaterialCreator;
 
   useLayoutEffect(() => {
-    shoeObject.traverse((child) => {
-      if (child instanceof Mesh) {
-        child.material.map = base;
-        child.material.normal = normal;
-        child.material.roughnessMap = rough;
-      }
-    });
+    try {
+      const loader = new OBJLoader();
+      // material.preload();
+      // loader.setMaterials(material);
+
+      loader.load(
+        require("../../assets/Airmax/shoe.obj"),
+        (group) => {
+          setShoeObject(group);
+        },
+        undefined, // onLoad callback (can be left undefined)
+        (error) => {
+          console.error("Error loading OBJ:", error);
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
+  // const shoeObject = useLoader(
+  //   OBJLoader,
+  //   require("../../assets/Airmax/shoe.obj"),
+  //   (loader) => {
+  //     material.preload();
+  //     loader.setMaterials(material);
+  //   }
+  // ) as Group;
+
+  useLayoutEffect(() => {
+    if (shoeObject) {
+      shoeObject.traverse((child) => {
+        if (child instanceof Mesh) {
+          child.material.map = base;
+          child.material.normal = normal;
+          child.material.roughnessMap = rough;
+        }
+      });
+    }
   }, [shoeObject]);
 
   useFrame((_state, _delta) => {
@@ -59,16 +83,11 @@ function Shoe(props: ShoeProps) {
     mesh.current.rotation.x += x;
     mesh.current.rotation.y += y;
     // mesh.current.rotation.z += z;
-
-    // mesh.current.rotation.x += delta;
-    // mesh.current.rotation.y += delta;
-    // mesh.current.rotation.z += delta;
-    // mesh.current.scale.set(1, 1, 1);
   });
 
   return (
     <mesh rotation={[0.7, 0, 0]} ref={mesh}>
-      <primitive object={shoeObject} scale={13} />
+      {shoeObject && <primitive object={shoeObject} scale={13} />}
     </mesh>
   );
 }

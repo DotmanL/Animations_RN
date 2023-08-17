@@ -1,16 +1,43 @@
-import { StatusBar } from "expo-status-bar";
-import { NavigationContainer } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { AppNavigationParameterList } from "interfaces/AppNavigationParameterList";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { GlobalStyles } from "constants/styles";
-import ThreeDimension from "screens/ThreeDimension";
-import TwoDimension from "screens/TwoDimension";
+import { StatusBar } from "expo-status-bar";
+import { AppNavigationParameterList } from "interfaces/AppNavigationParameterList";
 import PlayGround from "screens/PlayGround";
+import PostComments from "screens/PostComments";
+import Posts from "screens/Posts";
+import ThreeDimension from "screens/ThreeDimension";
+// import PlayThreeDimension from "screens/PlayThreeDimension";
 
 const Stack = createNativeStackNavigator<AppNavigationParameterList>();
 const BottomTabs = createBottomTabNavigator<AppNavigationParameterList>();
+
+function PostsOverview() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: GlobalStyles.colors.primary
+        },
+        headerTintColor: "white"
+      }}
+    >
+      <Stack.Screen
+        name="Posts"
+        component={Posts}
+        options={{ headerTitle: "Posts" }}
+      />
+      <Stack.Screen
+        name="PostComments"
+        component={PostComments}
+        options={{ headerTitle: "Comments" }}
+      />
+    </Stack.Navigator>
+  );
+}
 
 function AnimationsOverview() {
   return (
@@ -24,13 +51,14 @@ function AnimationsOverview() {
       }}
     >
       <BottomTabs.Screen
-        name="PlayGround"
-        component={PlayGround}
+        name="PostsOverview"
+        component={PostsOverview}
         options={{
-          title: "3D PlayGround",
-          tabBarLabel: "PlayGround",
+          title: "Posts",
+          headerShown: false,
+          tabBarLabel: "Posts",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="play-outline" size={size} color={color} />
+            <Ionicons name="apps-outline" size={size} color={color} />
           )
         }}
       />
@@ -45,14 +73,26 @@ function AnimationsOverview() {
           )
         }}
       />
-      <BottomTabs.Screen
-        name="TwoDimension"
-        component={TwoDimension}
+
+      {/* <BottomTabs.Screen
+        name="PlayThreeDimension"
+        component={PlayThreeDimension}
         options={{
-          title: "2D Animation",
-          tabBarLabel: "2D",
+          title: "3Dxc Animation",
+          tabBarLabel: "3Dxcxc",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="bulb-outline" size={size} color={color} />
+            <Ionicons name="baseball-outline" size={size} color={color} />
+          )
+        }}
+      /> */}
+      <BottomTabs.Screen
+        name="PlayGround"
+        component={PlayGround}
+        options={{
+          title: "3D PlayGround",
+          tabBarLabel: "PlayGround",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="play-outline" size={size} color={color} />
           )
         }}
       />
@@ -61,25 +101,29 @@ function AnimationsOverview() {
 }
 
 export default function App() {
+  const queryClient = new QueryClient();
+
   return (
     <>
-      <StatusBar style="light" />
-      <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{
-            headerStyle: {
-              backgroundColor: GlobalStyles.colors.primary
-            },
-            headerTintColor: "white"
-          }}
-        >
-          <Stack.Screen
-            name="AnimationsOverview"
-            component={AnimationsOverview}
-            options={{ headerShown: false }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <QueryClientProvider client={queryClient}>
+        <StatusBar style="light" />
+        <NavigationContainer>
+          <Stack.Navigator
+            screenOptions={{
+              headerStyle: {
+                backgroundColor: GlobalStyles.colors.primary
+              },
+              headerTintColor: "white"
+            }}
+          >
+            <Stack.Screen
+              name="AnimationsOverview"
+              component={AnimationsOverview}
+              options={{ headerShown: false }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </QueryClientProvider>
     </>
   );
 }
