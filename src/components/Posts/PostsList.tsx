@@ -64,7 +64,7 @@ function PostsList() {
       renderItem={renderExpenseItem}
       showsVerticalScrollIndicator={false}
       estimatedItemSize={800}
-      //   initialNumToRender={5}
+      // initialNumToRender={5}
     />
   );
 }

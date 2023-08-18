@@ -42,8 +42,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "space-between",
-    borderRadius: 6,
-    elevation: 3
+    borderRadius: 6
   },
   image: {
     flex: 1,
