@@ -29,7 +29,10 @@
     "react-native-safe-area-context": "4.6.3",
     "react-native-screens": "~3.22.0",
     "three": "^0.145.0",
-    "three-stdlib": "^2.24.1"
+    "three-stdlib": "^2.24.1",
+    "expo-notifications": "~0.20.1",
+    "expo-device": "~5.4.0",
+    "expo-constants": "~14.4.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

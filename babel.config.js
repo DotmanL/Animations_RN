@@ -11,7 +11,7 @@ module.exports = function (api) {
             screens: "./src/screens",
             interfaces: "./src/interfaces",
             constants: "./src/constants",
-            util: "./src/util",
+            utility: "./src/utility",
             store: "./src/store",
             data: "./src/data"
           }
