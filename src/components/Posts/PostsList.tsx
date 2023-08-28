@@ -3,8 +3,10 @@ import { FlashList } from "@shopify/flash-list";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useRef } from "react";
-import { Text } from "react-native";
+import { Text, Animated } from "react-native";
 import PostItem from "./PostItem";
+import StoriesList from "components/Stories/StoriesList";
+import { UserStories } from "components/Stories/storiesData";
 
 interface IPost {
   albumId: string;
@@ -33,7 +35,12 @@ function renderExpenseItem(itemData: PostsItemData) {
   );
 }
 
-function PostsList() {
+type Props = {
+  scrollY: any;
+};
+
+function PostsList(props: Props) {
+  const { scrollY } = props;
   const {
     isLoading,
     error,
@@ -57,8 +64,16 @@ function PostsList() {
 
   return (
     <FlashList
+      scrollEventThrottle={16}
+      onScroll={Animated.event(
+        [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+        {
+          useNativeDriver: false
+        }
+      )}
       ref={listRef}
       data={posts}
+      ListHeaderComponent={<StoriesList data={UserStories} />}
       removeClippedSubviews
       keyExtractor={(item) => item.id!}
       renderItem={renderExpenseItem}

@@ -33,14 +33,14 @@ function PostItem(props: Props) {
     const subscription1 = Notifications.addNotificationReceivedListener(
       (notification) => {
         const userName = notification.request.content.data.userName;
-        console.log(userName);
+        // console.log(userName);
       }
     );
 
     const subscription2 = Notifications.addNotificationResponseReceivedListener(
       (response) => {
         const userName = response.notification.request.content.data.userName;
-        console.log(userName, "in response");
+        // console.log(userName, "in response");
       }
     );
 
@@ -84,14 +84,14 @@ function PostItem(props: Props) {
       <View style={styles.postItem}>
         <Image style={styles.image} source={{ uri: url }} />
         <View style={styles.titleContainer}>
-          <Button
+          {/* <Button
             title="Send Local Notification"
             onPress={scheduleNotifcationHandler}
           />
           <Button
             title="Send Push Notification"
             onPress={sendPushNotificationHandler}
-          />
+          /> */}
           <View
             style={{
               flexDirection: "row",

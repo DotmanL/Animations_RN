@@ -5,7 +5,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { GlobalStyles } from "constants/styles";
 import { StatusBar } from "expo-status-bar";
-import { Alert, Platform } from "react-native";
+import { Alert, Platform, SafeAreaView, View, StyleSheet } from "react-native";
 import { AppNavigationParameterList } from "interfaces/AppNavigationParameterList";
 import PlayGround from "screens/PlayGround";
 import PostComments from "screens/PostComments";
@@ -15,7 +15,6 @@ import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
 import { useEffect } from "react";
-
 // import PlayThreeDimension from "screens/PlayThreeDimension";
 
 const Stack = createNativeStackNavigator<AppNavigationParameterList>();
@@ -34,7 +33,7 @@ function PostsOverview() {
       <Stack.Screen
         name="Posts"
         component={Posts}
-        options={{ headerTitle: "Posts" }}
+        options={{ headerTitle: "Posts", headerShown: false }}
       />
       <Stack.Screen
         name="PostComments"
@@ -128,7 +127,7 @@ async function registerForPushNotificationsAsync() {
     token = await Notifications.getExpoPushTokenAsync({
       projectId: Constants?.expoConfig?.extra?.eas.projectId
     });
-    console.log(token);
+    // console.log(token);
   } else {
     Alert.alert("Must use physical device for Push Notifications");
   }
@@ -144,6 +143,7 @@ async function registerForPushNotificationsAsync() {
 
   return token;
 }
+
 export default function App() {
   const queryClient = new QueryClient();
 
@@ -155,9 +155,11 @@ export default function App() {
   }, []);
 
   return (
-    <>
+    <View style={{ flex: 1, backgroundColor: "white" }}>
       <QueryClientProvider client={queryClient}>
-        <StatusBar style="light" />
+        <SafeAreaView style={styles.statusBar}>
+          <StatusBar style="dark" translucent backgroundColor="white" />
+        </SafeAreaView>
         <NavigationContainer>
           <Stack.Navigator
             screenOptions={{
@@ -175,6 +177,16 @@ export default function App() {
           </Stack.Navigator>
         </NavigationContainer>
       </QueryClientProvider>
-    </>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1
+  },
+  statusBar: {
+    height: 50,
+    backgroundColor: "white"
+  }
+});
