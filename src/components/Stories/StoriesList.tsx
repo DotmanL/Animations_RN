@@ -1,56 +1,48 @@
-import { FlashList } from "@shopify/flash-list";
-import { View } from "react-native";
-import StoryItem from "./StoryItem";
-
-interface IStory {
-  id: string;
-  userName: string;
-  assets: any[];
-}
-
-type PostsItemData = {
-  index: number;
-  item: IStory;
-};
-
-function renderExpenseItem(itemData: PostsItemData) {
-  return (
-    <StoryItem
-      index={itemData.index}
-      id={itemData.item.id}
-      userName={itemData.item.userName}
-      assets={itemData.item.assets}
-    />
-  );
-}
+import StoryModal from "./StoryModal";
+import { IUserStory } from "./storiesData";
 
 type Props = {
-  data: any;
+  data: IUserStory[];
+  userName: string;
+  isModalVisible: boolean;
+  activeStoryIndex: number;
+  setActiveStoryIndex: React.Dispatch<React.SetStateAction<number>>;
+  setIsModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 function StoriesList(props: Props) {
-  const { data } = props;
-  console.log(data);
+  const {
+    data,
+    userName,
+    activeStoryIndex,
+    setActiveStoryIndex,
+    isModalVisible,
+    setIsModalVisible
+  } = props;
+
+  const activeIndexStoryAssets = data.find(
+    (_, index) => index === activeStoryIndex
+  );
 
   return (
-    <View
-      style={{
-        width: "100%",
-        flexDirection: "row",
-        alignItems: "center",
-        paddingTop: 5
-      }}
-    >
-      <FlashList
-        data={data}
-        keyExtractor={(item) => item.id!}
-        renderItem={renderExpenseItem}
-        showsVerticalScrollIndicator={false}
-        estimatedItemSize={800}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-      />
-    </View>
+    <>
+      {!!activeIndexStoryAssets && (
+        <>
+          <StoryModal
+            userName={userName}
+            isModalVisible={
+              activeStoryIndex >= 0 && isModalVisible ? true : false
+            }
+            allData={data}
+            activeStoryIndex={activeStoryIndex}
+            setActiveStoryIndex={setActiveStoryIndex}
+            setIsModalVisible={setIsModalVisible}
+            maxStoriesLength={data.length}
+            stories={activeIndexStoryAssets.assets}
+          />
+        </>
+      )}
+    </>
   );
 }
 

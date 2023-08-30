@@ -25,9 +25,9 @@ function PostsOverview() {
     <Stack.Navigator
       screenOptions={{
         headerStyle: {
-          backgroundColor: GlobalStyles.colors.primary
+          backgroundColor: GlobalStyles.colors.secondary
         },
-        headerTintColor: "white"
+        headerTintColor: GlobalStyles.colors.primary
       }}
     >
       <Stack.Screen
@@ -48,10 +48,10 @@ function AnimationsOverview() {
   return (
     <BottomTabs.Navigator
       screenOptions={{
-        headerStyle: { backgroundColor: GlobalStyles.colors.primary },
-        headerTintColor: "white",
-        tabBarStyle: { backgroundColor: GlobalStyles.colors.primary },
-        tabBarInactiveTintColor: "white",
+        headerStyle: { backgroundColor: GlobalStyles.colors.secondary },
+        headerTintColor: GlobalStyles.colors.primary,
+        tabBarStyle: { backgroundColor: GlobalStyles.colors.secondary },
+        tabBarInactiveTintColor: GlobalStyles.colors.primary,
         tabBarActiveTintColor: GlobalStyles.colors.accent500
       }}
     >

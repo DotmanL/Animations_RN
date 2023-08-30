@@ -1,4 +1,4 @@
-interface IUserStory {
+export interface IUserStory {
   id: string;
   userName: string;
   assets: any[];
@@ -20,6 +20,18 @@ export const UserStories: IUserStory[] = [
       {
         story: require("./stories/story3.mp4"),
         type: "video"
+      },
+      {
+        story: require("./stories/story2.jpg"),
+        type: "image"
+      },
+      {
+        story: require("./stories/story1.jpg"),
+        type: "image"
+      },
+      {
+        story: require("./stories/story3.mp4"),
+        type: "video"
       }
     ]
   },
@@ -27,6 +39,30 @@ export const UserStories: IUserStory[] = [
     id: "abcdef",
     userName: "Ayodeji",
     assets: [
+      {
+        story: require("./stories/story1.jpg"),
+        type: "image"
+      },
+      {
+        story: require("./stories/story2.jpg"),
+        type: "image"
+      },
+      {
+        story: require("./stories/story3.mp4"),
+        type: "video"
+      },
+      {
+        story: require("./stories/story1.jpg"),
+        type: "image"
+      },
+      {
+        story: require("./stories/story2.jpg"),
+        type: "image"
+      },
+      {
+        story: require("./stories/story3.mp4"),
+        type: "video"
+      },
       {
         story: require("./stories/story1.jpg"),
         type: "image"

@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import PostsList from "components/Posts/PostsList";
+import { GlobalStyles } from "constants/styles";
 import { useState } from "react";
 import { Animated, Text, View } from "react-native";
 
@@ -14,13 +15,13 @@ function Posts() {
   });
 
   return (
-    <View style={{ flex: 1, backgroundColor: "white" }}>
+    <View style={{ flex: 1, backgroundColor: GlobalStyles.colors.secondary }}>
       <Animated.View
         style={{
           height: headerHeightAnimated,
           justifyContent: "center",
           overflow: "hidden",
-          backgroundColor: "white",
+          backgroundColor: GlobalStyles.colors.secondary,
           paddingHorizontal: 20
         }}
       >

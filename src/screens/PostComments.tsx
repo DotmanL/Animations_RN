@@ -5,7 +5,7 @@ function PostComments() {
     <View style={{ flex: 1 }}>
       <View
         style={{
-          marginTop: 14,
+          marginTop: 1,
           width: "100%",
           height: 400,
           justifyContent: "center",

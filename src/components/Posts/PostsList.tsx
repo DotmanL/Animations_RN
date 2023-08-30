@@ -2,11 +2,10 @@ import { useScrollToTop } from "@react-navigation/native";
 import { FlashList } from "@shopify/flash-list";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import StoryItem from "components/Stories/StoryItem";
 import { useRef } from "react";
-import { Text, Animated } from "react-native";
+import { Animated, Text } from "react-native";
 import PostItem from "./PostItem";
-import StoriesList from "components/Stories/StoriesList";
-import { UserStories } from "components/Stories/storiesData";
 
 interface IPost {
   albumId: string;
@@ -73,7 +72,7 @@ function PostsList(props: Props) {
       )}
       ref={listRef}
       data={posts}
-      ListHeaderComponent={<StoriesList data={UserStories} />}
+      ListHeaderComponent={<StoryItem />}
       removeClippedSubviews
       keyExtractor={(item) => item.id!}
       renderItem={renderExpenseItem}
