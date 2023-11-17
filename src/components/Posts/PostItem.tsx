@@ -106,6 +106,12 @@ function PostItem(props: Props) {
               size={24}
               onPress={() => navigation.navigate("PostComments")}
             />
+            <Ionicons
+              name="rocket-outline"
+              color="red"
+              size={24}
+              onPress={() => navigation.navigate("SecondBottomTab")}
+            />
           </View>
         </View>
       </View>

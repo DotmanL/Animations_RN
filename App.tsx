@@ -15,10 +15,15 @@ import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
 import { useEffect } from "react";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import SecondBottomTab from "screens/SecondBottomTab";
+import ThirdBottomTab from "screens/ThirdBottomTab";
 // import PlayThreeDimension from "screens/PlayThreeDimension";
 
 const Stack = createNativeStackNavigator<AppNavigationParameterList>();
 const BottomTabs = createBottomTabNavigator<AppNavigationParameterList>();
+
+const Tab = createMaterialTopTabNavigator();
 
 function PostsOverview() {
   return (
@@ -44,37 +49,104 @@ function PostsOverview() {
   );
 }
 
-function AnimationsOverview() {
+function TopNavigation() {
   return (
-    <BottomTabs.Navigator
+    <Tab.Navigator
       screenOptions={{
-        headerStyle: { backgroundColor: GlobalStyles.colors.secondary },
-        headerTintColor: GlobalStyles.colors.primary,
+        // headerStyle: { backgroundColor: GlobalStyles.colors.secondary },
+        // headerTintColor: GlobalStyles.colors.primary,
         tabBarStyle: { backgroundColor: GlobalStyles.colors.secondary },
         tabBarInactiveTintColor: GlobalStyles.colors.primary,
         tabBarActiveTintColor: GlobalStyles.colors.accent500
       }}
     >
-      <BottomTabs.Screen
+      <Tab.Screen
         name="PostsOverview"
         component={PostsOverview}
         options={{
           title: "Posts",
+          // headerShown: false,
+          tabBarLabel: "Posts"
+          // tabBarIcon: ({ color, size }) => (
+          //   <Ionicons name="apps-outline" size={size} color={color} />
+          // )
+        }}
+      />
+      <Tab.Screen
+        name="ThreeDimension"
+        component={ThreeDimension}
+        options={{
+          title: "3D Animation",
+          tabBarLabel: "3D"
+          // tabBarIcon: ({ color, size }) => (
+          //   <Ionicons name="baseball-outline" size={size} color={color} />
+          // )
+        }}
+      />
+
+      {/* <BottomTabs.Screen
+        name="PlayThreeDimension"
+        component={PlayThreeDimension}
+        options={{
+          title: "3Dxc Animation",
+          tabBarLabel: "3Dxcxc",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="baseball-outline" size={size} color={color} />
+          )
+        }}
+      /> */}
+      <Tab.Screen
+        name="PlayGround"
+        component={PlayGround}
+        options={{
+          title: "3D PlayGround",
+          tabBarLabel: "PlayGround"
+          // tabBarIcon: ({ color, size }) => (
+          //   <Ionicons name="play-outline" size={size} color={color} />
+          // )
+        }}
+      />
+    </Tab.Navigator>
+  );
+}
+
+function BottomNavigation() {
+  return (
+    <BottomTabs.Navigator
+      screenOptions={{
+        headerStyle: { backgroundColor: GlobalStyles.colors.secondary },
+        headerTintColor: GlobalStyles.colors.primary,
+        tabBarStyle: { backgroundColor: "black" },
+        tabBarInactiveTintColor: GlobalStyles.colors.primary,
+        tabBarActiveTintColor: GlobalStyles.colors.accent500
+      }}
+    >
+      {/* <Stack.Screen
+              name="TopNavigationOverview"
+              component={TopNavigation}
+              options={{ headerShown: false }}
+            /> */}
+
+      <BottomTabs.Screen
+        name="TopNavigationOverview"
+        component={TopNavigation}
+        options={{
+          title: "Explore",
           headerShown: false,
-          tabBarLabel: "Posts",
+          tabBarLabel: "Explore",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="apps-outline" size={size} color={color} />
           )
         }}
       />
       <BottomTabs.Screen
-        name="ThreeDimension"
-        component={ThreeDimension}
+        name="SecondBottomTab"
+        component={SecondBottomTab}
         options={{
-          title: "3D Animation",
-          tabBarLabel: "3D",
+          title: "Second Tab",
+          tabBarLabel: "Second Tab",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="baseball-outline" size={size} color={color} />
+            <Ionicons name="football-outline" size={size} color={color} />
           )
         }}
       />
@@ -91,13 +163,13 @@ function AnimationsOverview() {
         }}
       /> */}
       <BottomTabs.Screen
-        name="PlayGround"
-        component={PlayGround}
+        name="ThirdBottomTab"
+        component={ThirdBottomTab}
         options={{
-          title: "3D PlayGround",
-          tabBarLabel: "PlayGround",
+          title: "Third Tab",
+          tabBarLabel: "Third Tab",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="play-outline" size={size} color={color} />
+            <Ionicons name="car-outline" size={size} color={color} />
           )
         }}
       />
@@ -170,8 +242,8 @@ export default function App() {
             }}
           >
             <Stack.Screen
-              name="AnimationsOverview"
-              component={AnimationsOverview}
+              name="BottomNavigationOverview"
+              component={BottomNavigation}
               options={{ headerShown: false }}
             />
           </Stack.Navigator>

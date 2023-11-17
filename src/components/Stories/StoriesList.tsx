@@ -24,6 +24,10 @@ function StoriesList(props: Props) {
     (_, index) => index === activeStoryIndex
   );
 
+  const nextActiveIndexStoryAssets = data.find(
+    (_, index) => index + 1 === activeStoryIndex + 1
+  );
+
   return (
     <>
       {!!activeIndexStoryAssets && (
@@ -39,6 +43,7 @@ function StoriesList(props: Props) {
             setIsModalVisible={setIsModalVisible}
             maxStoriesLength={data.length}
             stories={activeIndexStoryAssets.assets}
+            nextStories={nextActiveIndexStoryAssets?.assets}
           />
         </>
       )}

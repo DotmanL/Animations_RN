@@ -2,20 +2,31 @@ import { Ionicons } from "@expo/vector-icons";
 import { Audio, ResizeMode, Video } from "expo-av";
 import React, { useEffect, useRef, useState } from "react";
 import {
-  Animated,
-  Button,
+  Animated as AN1,
   Image,
   Modal,
   Pressable,
   StyleSheet,
   Text,
   TouchableWithoutFeedback,
+  ScrollView,
   View,
   useWindowDimensions
 } from "react-native";
-import { IUserStory } from "./storiesData";
+import {
+  Gesture,
+  GestureDetector,
+  GestureHandlerRootView
+} from "react-native-gesture-handler";
 import Swipeable from "react-native-gesture-handler/Swipeable";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
+import Animated, {
+  Easing,
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming
+} from "react-native-reanimated";
+import { IUserStory } from "./storiesData";
 
 type Props = {
   allData: IUserStory[];
@@ -25,6 +36,7 @@ type Props = {
   setActiveStoryIndex: React.Dispatch<React.SetStateAction<number>>;
   setIsModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
   stories: any;
+  nextStories: any;
   maxStoriesLength: number;
 };
 
@@ -37,13 +49,17 @@ function StoryModal(props: Props) {
     setActiveStoryIndex,
     setIsModalVisible,
     stories,
+    nextStories,
     maxStoriesLength
   } = props;
   const { width } = useWindowDimensions();
   const video = useRef<Video | null>(null);
   const [activeStory, setActiveStory] = useState<number>(0);
-  const [status, setStatus] = React.useState({});
-  const [progress] = useState(new Animated.Value(0));
+  const [progress] = useState(new AN1.Value(0));
+  const [moveSuccess, setMoveSuccess] = useState(false);
+
+  const translateX = useSharedValue(0);
+  const contextX = useSharedValue(0);
 
   useEffect(() => {
     Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
@@ -59,16 +75,25 @@ function StoryModal(props: Props) {
   }, [activeStory, isModalVisible]);
 
   const animateProgressBar = () => {
-    Animated.timing(progress, {
+    AN1.timing(progress, {
       toValue: 1,
       duration: 3000,
       useNativeDriver: false
-    }).start((finished) => {
-      if (finished.finished) {
-        handleChangeStoryForward();
-      }
-    });
+    }).start();
+
+    //   (finished) => {
+    //   if (finished.finished) {
+    //     handleChangeStoryForward();
+    //   }
+    // });
   };
+
+  useEffect(() => {
+    if (moveSuccess) {
+      setActiveStory(0);
+      setActiveStoryIndex(activeStoryIndex + 1);
+    }
+  }, [moveSuccess]);
 
   const interpolatedWidth = progress.interpolate({
     inputRange: [0, 1],
@@ -140,8 +165,6 @@ function StoryModal(props: Props) {
   }
 
   function handleSwipe(direction: any) {
-    console.log(direction);
-
     if (direction === "left") {
       handleChangeStoryBackward();
     }
@@ -150,94 +173,181 @@ function StoryModal(props: Props) {
     }
   }
 
+  const handleGestureEnd = () => {
+    setActiveStory(0);
+  };
+
+  const gesture = Gesture.Pan()
+    .onBegin(() => {
+      contextX.value = translateX.value;
+    })
+    .onUpdate(({ translationX }) => {
+      // translateX.value = clamp(translationX + contextX.value, -width / 2, 0);
+      translateX.value = translationX + contextX.value;
+    })
+    .onEnd(({}, success) => {
+      // translateX.value = withSpring(0, {
+      //   damping: 2,
+      //   stiffness: 80,
+      //   velocity: velocityX
+      // });
+      translateX.value = withTiming(0, {
+        duration: 300,
+        easing: Easing.inOut(Easing.ease)
+      });
+
+      // if (translateX.value < -100) {
+      //   console.log("moved");
+      //   runOnJS(handleGestureEnd)();
+      // }
+
+      if (success) {
+        runOnJS(handleMoveNextUserStory)();
+        // console.log("success");
+      }
+    });
+
+  const offset = activeStory * width;
+
+  const perspective = width;
+  const angle = Math.atan(perspective / (width / 2));
+
+  const viewStyles = useAnimatedStyle(() => {
+    const rotateY = (angle * translateX.value) / (width / 2);
+    const perspectiveStyle = {
+      perspective,
+      transform: [
+        { translateX: translateX.value },
+        { rotateY: `${rotateY}rad` }
+      ]
+    };
+    return perspectiveStyle;
+  });
+
   return (
     <TouchableWithoutFeedback style={styles.container}>
       <Modal
         style={styles.modal}
         presentationStyle="overFullScreen"
-        visible={isModalVisible}
         animationType="fade"
+        visible={isModalVisible}
       >
-        <View style={styles.storyContainer}>
-          <View style={styles.progressBarContainer}>
-            {generateSteps(stories.length).map((_, index) => (
-              <View
-                key={index}
-                style={{
-                  height: 4,
-                  borderRadius: 6,
-                  backgroundColor: "gray",
-                  width: width / (stories.length + 0.3)
-                }}
-              >
-                <Animated.View
-                  style={[
-                    styles.progressBar,
-                    index === activeStory && animatedStyle,
-                    index <= activeStory
-                      ? { backgroundColor: "white" }
-                      : { backgroundColor: "gray" }
-                  ]}
-                ></Animated.View>
-              </View>
-            ))}
-          </View>
-          <View style={styles.closeContainer}>
-            <Text style={styles.userNameText}>{userName}</Text>
-            <Ionicons
-              name="close-outline"
-              color={"white"}
-              size={48}
-              onPress={() => {
-                setIsModalVisible(false);
-                setActiveStoryIndex(0);
-                setActiveStory(0);
-              }}
-            />
-          </View>
-          <Pressable
-            style={styles.assetsContainer}
-            onLongPress={() => console.log("long pressed")}
-          >
-            <GestureHandlerRootView>
-              <Swipeable
-                onSwipeableClose={(direction) => handleSwipe(direction)}
-              >
-                <View>
-                  <Pressable
-                    style={styles.prevContainer}
-                    onPress={handleChangeStoryBackward}
-                  />
-                  <Pressable
-                    style={styles.forwardContainer}
-                    onPress={handleChangeStoryForward}
-                  />
+        <GestureHandlerRootView>
+          <GestureDetector gesture={gesture}>
+            <Swipeable onSwipeableClose={(direction) => handleSwipe(direction)}>
+              <Animated.View style={[styles.animatedContainer, viewStyles]}>
+                <ScrollView
+                  horizontal
+                  pagingEnabled
+                  contentContainerStyle={{
+                    width: width,
+                    height: "100%",
+                    flex: 1
+                  }}
+                >
+                  <View style={styles.progressBarContainer}>
+                    {generateSteps(stories.length).map((_, index) => (
+                      <View
+                        key={index}
+                        style={{
+                          height: 4,
+                          borderRadius: 6,
+                          backgroundColor: "gray",
+                          width: width / (stories.length + 0.3)
+                        }}
+                      >
+                        <AN1.View
+                          style={[
+                            styles.progressBar,
+                            index === activeStory && animatedStyle,
+                            index <= activeStory
+                              ? { backgroundColor: "white" }
+                              : { backgroundColor: "gray" }
+                          ]}
+                        ></AN1.View>
+                      </View>
+                    ))}
+                  </View>
+                  <View style={styles.closeContainer}>
+                    <Text style={styles.userNameText}>{userName}</Text>
+                    <Ionicons
+                      name="close-outline"
+                      color={"white"}
+                      size={48}
+                      onPress={() => {
+                        setIsModalVisible(false);
+                        setActiveStoryIndex(0);
+                        setActiveStory(0);
+                      }}
+                    />
+                  </View>
 
-                  {stories[activeStory].type === "image" ? (
-                    <Image
-                      style={styles.image}
-                      source={stories[activeStory].story}
-                      resizeMode="cover"
+                  <Pressable style={styles.assetsContainer}>
+                    <Pressable
+                      style={styles.prevContainer}
+                      onPress={handleChangeStoryBackward}
                     />
-                  ) : (
-                    <Video
-                      ref={video}
-                      style={styles.image}
-                      source={stories[activeStory].story}
-                      useNativeControls
-                      resizeMode={ResizeMode.COVER}
-                      shouldPlay
-                      usePoster
-                      isLooping
-                      volume={1}
-                      isMuted={false}
+                    <Pressable
+                      style={styles.forwardContainer}
+                      onPress={handleChangeStoryForward}
                     />
-                  )}
-                </View>
-              </Swipeable>
-            </GestureHandlerRootView>
-          </Pressable>
-        </View>
+
+                    <View
+                      style={{
+                        flex: 1,
+                        flexDirection: "row",
+                        width: width,
+                        height: "100%"
+                      }}
+                    >
+                      {stories[activeStory].type === "image" ? (
+                        <Image
+                          style={styles.image}
+                          source={stories[activeStory].story}
+                          resizeMode="cover"
+                        />
+                      ) : (
+                        <Video
+                          ref={video}
+                          style={styles.image}
+                          source={stories[activeStory].story}
+                          useNativeControls
+                          resizeMode={ResizeMode.COVER}
+                          shouldPlay
+                          usePoster
+                          isLooping
+                          volume={1}
+                          isMuted={false}
+                        />
+                      )}
+
+                      {/* {nextStories[activeStory].type === "image" ? (
+                        <Image
+                          style={styles.image}
+                          source={stories[activeStory].story}
+                          resizeMode="cover"
+                        />
+                      ) : (
+                        <Video
+                          ref={video}
+                          style={styles.image}
+                          source={stories[activeStory].story}
+                          useNativeControls
+                          resizeMode={ResizeMode.COVER}
+                          shouldPlay
+                          usePoster
+                          isLooping
+                          volume={1}
+                          isMuted={false}
+                        />
+                      )} */}
+                    </View>
+                  </Pressable>
+                </ScrollView>
+              </Animated.View>
+            </Swipeable>
+          </GestureDetector>
+        </GestureHandlerRootView>
       </Modal>
     </TouchableWithoutFeedback>
   );
@@ -256,6 +366,10 @@ const styles = StyleSheet.create({
   storyContainer: {
     flex: 1
   },
+  animatedContainer: {
+    width: "100%",
+    height: "100%"
+  },
   progressBarContainer: {
     position: "absolute",
     flexDirection: "row",
@@ -264,8 +378,7 @@ const styles = StyleSheet.create({
     top: 50,
     zIndex: 10,
     width: "100%",
-    paddingHorizontal: 4,
-    height: 10
+    paddingHorizontal: 4
   },
   progressBar: {
     height: 4,

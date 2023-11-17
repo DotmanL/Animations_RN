@@ -1,5 +1,8 @@
 export type AppNavigationParameterList = {
-  AnimationsOverview: undefined;
+  TopNavigationOverview: undefined;
+  BottomNavigationOverview: undefined;
+  SecondBottomTab: undefined;
+  ThirdBottomTab: undefined;
   PlayGround: undefined;
   TwoDimension: undefined;
   ThreeDimension: undefined;

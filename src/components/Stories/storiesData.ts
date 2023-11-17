@@ -18,8 +18,8 @@ export const UserStories: IUserStory[] = [
         type: "image"
       },
       {
-        story: require("./stories/story3.mp4"),
-        type: "video"
+        story: require("./stories/story2.jpg"),
+        type: "image"
       },
       {
         story: require("./stories/story2.jpg"),
@@ -30,8 +30,8 @@ export const UserStories: IUserStory[] = [
         type: "image"
       },
       {
-        story: require("./stories/story3.mp4"),
-        type: "video"
+        story: require("./stories/story2.jpg"),
+        type: "image"
       }
     ]
   },
@@ -48,8 +48,8 @@ export const UserStories: IUserStory[] = [
         type: "image"
       },
       {
-        story: require("./stories/story3.mp4"),
-        type: "video"
+        story: require("./stories/story1.jpg"),
+        type: "image"
       },
       {
         story: require("./stories/story1.jpg"),
@@ -60,8 +60,8 @@ export const UserStories: IUserStory[] = [
         type: "image"
       },
       {
-        story: require("./stories/story3.mp4"),
-        type: "video"
+        story: require("./stories/story1.jpg"),
+        type: "image"
       },
       {
         story: require("./stories/story1.jpg"),
@@ -72,8 +72,8 @@ export const UserStories: IUserStory[] = [
         type: "image"
       },
       {
-        story: require("./stories/story3.mp4"),
-        type: "video"
+        story: require("./stories/story1.jpg"),
+        type: "image"
       }
     ]
   },
